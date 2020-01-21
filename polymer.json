@@ -1,0 +1,38 @@
+{
+  "entrypoint": "index.html",
+  "basePath": "./",
+  "shell": "src/components/my-app.js",
+  "sources": [
+    "images/**/*"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "icon.svg",
+    "node_modules/@webcomponents/webcomponentsjs/**",
+    "push-manifest.json"
+  ],
+  "builds": [
+    {
+      "name": "tile-template",
+
+      "browserCapabilities": [
+        "es2015"
+      ],
+      "js": {
+        "compile": "es2015",
+        "minify": true,
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": true,
+      "addServiceWorker": false
+    }
+  ],
+  "moduleResolution": "node",
+  "npm": true
+}
