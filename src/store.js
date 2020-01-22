@@ -9,14 +9,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 import {
-  createStore,
-  compose,
-  applyMiddleware,
-  combineReducers
+	createStore,
+	compose,
+	applyMiddleware,
+	combineReducers
 } from 'redux';
 import thunk from 'redux-thunk';
 import { lazyReducerEnhancer } from 'pwa-helpers/lazy-reducer-enhancer.js';
 import app from './reducers/app.js';
+import { createLogger } from 'redux-logger/src/index.js';
+
+const logger = createLogger({ collapsed: true, diff: true });
 
 // Sets up a Chrome extension for time travel debugging.
 // See https://github.com/zalmoxisus/redux-devtools-extension for more information.
@@ -28,13 +31,13 @@ const devCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // section of the wiki for more details:
 // https://github.com/Polymer/pwa-starter-kit/wiki/4.-Redux-and-state-management
 export const store = createStore(
-  state => state,
-  devCompose(
-    lazyReducerEnhancer(combineReducers),
-    applyMiddleware(thunk))
+	state => state,
+	devCompose(
+		lazyReducerEnhancer(combineReducers),
+		applyMiddleware(thunk, logger))
 );
 
 // Initially loaded reducers.
 store.addReducers({
-  app
+	app
 });
