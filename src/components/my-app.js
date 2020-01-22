@@ -21,9 +21,8 @@ import { store } from '../store.js';
 
 // These are the actions needed by this element.
 import {
-  navigate,
-  updateDrawerState,
-  headerBackButtonClicked
+	navigate,
+	headerBackButtonClicked
 } from '../actions/app.js';
 
 // These are the elements needed by this element.
@@ -31,23 +30,23 @@ import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-scroll-effects/effects/waterfall.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import { menuIcon } from './my-icons.js';
+import './icons.js';
 
 import 'webview-tile-header/webview-tile-header'
 
 class MyApp extends connect(store)(LitElement) {
-  static get properties() {
-    return {
-      appTitle: { type: String },
-      _page: { type: String },
-      _drawerOpened: { type: Boolean },
-      _offline: { type: Boolean }
-    };
-  }
+	static get properties() {
+		return {
+			appTitle: { type: String },
+			_page: { type: String },
+			_drawerOpened: { type: Boolean },
+			_offline: { type: Boolean }
+		};
+	}
 
-  static get styles() {
-    return [
-      css`
+	static get styles() {
+		return [
+			css`
         :host {
           display: block;
 
@@ -188,12 +187,11 @@ class MyApp extends connect(store)(LitElement) {
           }
         }
       `
-    ];
-  }
+		];
+	}
 
-  render() {
-    // Anything that's related to rendering should be done in here.
-    return html`
+	render() {
+		return html`
       <!-- Webview Header -->
       <moduware-header	
         @back-button-click="${() => store.dispatch(headerBackButtonClicked())}"
@@ -201,55 +199,45 @@ class MyApp extends connect(store)(LitElement) {
 			</moduware-header>
       <!-- Main content -->
       <main role="main" class="main-content">
-        <my-view1 class="page" ?active="${this._page === 'view1'}"></my-view1>
-        <my-view2 class="page" ?active="${this._page === 'view2'}"></my-view2>
-        <my-view3 class="page" ?active="${this._page === 'view3'}"></my-view3>
-        <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
+        <home-page class="page" ?active="${this._page === 'home-page'}"></home-page>
+        <page-one class="page" ?active="${this._page === 'page-one'}"></page-one>
+        <page-two class="page" ?active="${this._page === 'page-two'}"></page-two>
+        <error-page class="page" ?active="${this._page === 'error-page'}"></error-page>
       </main>
-
     `;
-  }
+	}
 
-  constructor() {
-    super();
-    // To force all event listeners for gestures to be passive.
-    // See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
-    setPassiveTouchGestures(true);
-  }
+	constructor() {
+		super();
+		// To force all event listeners for gestures to be passive.
+		// See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
+		setPassiveTouchGestures(true);
+	}
 
-  firstUpdated() {
-    store.dispatch(navigate("/view3")); // navigate can take /view1 or view2 or /view3
-    installMediaQueryWatcher(`(min-width: 460px)`,
-        () => store.dispatch(updateDrawerState(false)));
-    if(Moduware) {
-      console.log('Moduware', Moduware);
-    }
-  }
+	firstUpdated() {
+		store.dispatch(navigate("/home-page")); // navigate can take /view1 or view2 or /view3
+		//installMediaQueryWatcher(`(min-width: 460px)`, () => store.dispatch(updateDrawerState(false)));
+		if (Moduware) {
+			console.log('Moduware', Moduware);
+		}
+	}
 
-  updated(changedProps) {
-    if (changedProps.has('_page')) {
-      const pageTitle = this.appTitle + ' - ' + this._page;
-      updateMetadata({
-        title: pageTitle,
-        description: pageTitle
-        // This object also takes an image property, that points to an img src.
-      });
-    }
-  }
+	updated(changedProps) {
+		if (changedProps.has('_page')) {
+			const pageTitle = this.appTitle + ' - ' + this._page;
+			updateMetadata({
+				title: pageTitle,
+				description: pageTitle
+				// This object also takes an image property, that points to an img src.
+			});
+		}
+	}
 
-  _menuButtonClicked() {
-    store.dispatch(updateDrawerState(true));
-  }
-
-  _drawerOpenedChanged(e) {
-    store.dispatch(updateDrawerState(e.target.opened));
-  }
-
-  stateChanged(state) {
-    this._page = state.app.page;
-    this._offline = state.app.offline;
-    this._drawerOpened = state.app.drawerOpened;
-  }
+	stateChanged(state) {
+		this._page = state.app.page;
+		this._offline = state.app.offline;
+		this._drawerOpened = state.app.drawerOpened;
+	}
 }
 
 window.customElements.define('my-app', MyApp);

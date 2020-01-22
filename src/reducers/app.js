@@ -9,9 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 import {
-  UPDATE_PAGE,
-  UPDATE_OFFLINE,
-  UPDATE_DRAWER_STATE
+  UPDATE_PAGE
 } from '../actions/app.js';
 
 const INITIAL_STATE = {
@@ -26,16 +24,6 @@ const app = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         page: action.page
-      };
-    case UPDATE_OFFLINE:
-      return {
-        ...state,
-        offline: action.offline
-      };
-    case UPDATE_DRAWER_STATE:
-      return {
-        ...state,
-        drawerOpened: action.opened
       };
     default:
       return state;

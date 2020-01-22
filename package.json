@@ -8,7 +8,7 @@
   "repository": "Polymer/pwa-starter-kit",
   "scripts": {
     "start": "polymer serve",
-    "build": "polymer build && gulp prpl-server",
+    "build": "polymer build",
     "build:static": "polymer build",
     "serve": "prpl-server --root server/build",
     "serve:static": "polymer serve --port 5000 build/es5-bundled",

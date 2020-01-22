@@ -8,30 +8,44 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-import { html } from 'lit-element';
+import { html, css } from 'lit-element';
 import { PageViewElement } from './page-view-element.js';
-
-// These are the shared styles needed by this element.
+import { navigate } from '../actions/app.js';
+import { store } from '../store.js';
+import { connect } from 'pwa-helpers/connect-mixin.js';
 import { SharedStyles } from './shared-styles.js';
+import app from '../reducers/app.js';
+import './icons.js';
 
-class MyView404 extends PageViewElement {
-  static get styles() {
-    return [
-      SharedStyles
-    ];
-  }
+class PageOne extends connect(store)(PageViewElement) {
+	static get properties() {
+		return {
+			_page: { type: String }
+		};
+	}
 
-  render() {
-    return html`
+	static get styles() {
+		return [
+			SharedStyles,
+			css`
+        h2 {
+					color: red;
+        }
+      `
+		];
+	}
+
+	render() {
+		return html`
       <section>
-        <h2>Oops! You hit a 404</h2>
-        <p>
-          The page you're looking for doesn't seem to exist. Head back
-          <a href="/">home</a> and try again?
-        </p>
+				<h2>view 1</h2>
       </section>
-    `
-  }
+    `;
+	}
+
+	stateChanged(state) {
+		this._page = state.app.page;
+	}
 }
 
-window.customElements.define('my-view404', MyView404);
+window.customElements.define('page-one', PageOne);

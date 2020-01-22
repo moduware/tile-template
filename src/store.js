@@ -16,7 +16,6 @@ import {
 } from 'redux';
 import thunk from 'redux-thunk';
 import { lazyReducerEnhancer } from 'pwa-helpers/lazy-reducer-enhancer.js';
-
 import app from './reducers/app.js';
 
 // Sets up a Chrome extension for time travel debugging.

@@ -9,68 +9,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 export const UPDATE_PAGE = 'UPDATE_PAGE';
-export const UPDATE_OFFLINE = 'UPDATE_OFFLINE';
-export const UPDATE_DRAWER_STATE = 'UPDATE_DRAWER_STATE';
 
 export const navigate = (path) => (dispatch) => {
-  // Extract the page name from path.
-  const page = path === '/' ? 'view1' : path.slice(1);
-
-  // Any other info you might want to extract from the path (like page type),
-  // you can do here
-  dispatch(loadPage(page));
-
-  // Close the drawer - in case the *path* change came from a link in the drawer.
-  dispatch(updateDrawerState(false));
+	const page = path === '/' ? 'home-page' : path.slice(1);
+	dispatch(loadPage(page));
 };
 
 const loadPage = (page) => (dispatch) => {
-  switch(page) {
-    case 'view1':
-      import('../components/my-view1.js').then((module) => {
-        // Put code in here that you want to run every time when
-        // navigating to view1 after my-view1.js is loaded.
-      });
-      break;
-    case 'view2':
-      import('../components/my-view2.js');
-      break;
-    case 'view3':
-      import('../components/my-view3.js');
-      break;
-    default:
-      page = 'view404';
-      import('../components/my-view404.js');
-  }
+	switch (page) {
+		case 'home-page':
+			import('../components/home-page.js').then((module) => {
+				// Put code in here that you want to run every time when
+				// navigating to view1 after my-view1.js is loaded.
+			});
+			break;
+		case 'page-one':
+			import('../components/page-one.js');
+			break;
+		case 'page-two':
+			import('../components/page-two.js');
+			break;
+		default:
+			page = 'error-page';
+			import('../components/error-page.js');
+	}
 
-  dispatch(updatePage(page));
+	dispatch(updatePage(page));
 };
 
 const updatePage = (page) => {
-  return {
-    type: UPDATE_PAGE,
-    page
-  };
-};
-
-export const updateOffline = (offline) => (dispatch, getState) => {
-  dispatch({
-    type: UPDATE_OFFLINE,
-    offline
-  });
-};
-
-export const updateDrawerState = (opened) => {
-  return {
-    type: UPDATE_DRAWER_STATE,
-    opened
-  };
+	return {
+		type: UPDATE_PAGE,
+		page
+	};
 };
 
 export const headerBackButtonClicked = () => (dispatch, getState) => {
-  console.log('Webview header back button clicked!');
-  if(Moduware) {
-    Moduware.API.Exit();
-  }
+	console.log('Webview header back button clicked!');
+	if (Moduware) {
+		if (getState().app.page === 'page-one' || getState().app.page === 'page-two' || getState().app.page === 'error-page') {
+			dispatch(navigate('/home-page'))
+		} else {
+			Moduware.API.Exit();
+		}
+	}
 };
 
