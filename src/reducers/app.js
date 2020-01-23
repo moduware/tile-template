@@ -9,25 +9,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 import {
-  UPDATE_PAGE
+	UPDATE_PAGE,
+	MODUWARE_API_READY,
+	LOAD_LANGUAGE_TRANSLATION,
 } from '../actions/app.js';
 
 const INITIAL_STATE = {
-  page: '',
-  offline: false,
-  drawerOpened: false,
+	page: '',
+	apiReady: false,
+	language: 'en'
 };
 
 const app = (state = INITIAL_STATE, action) => {
-  switch (action.type) {
-    case UPDATE_PAGE:
-      return {
-        ...state,
-        page: action.page
-      };
-    default:
-      return state;
-  }
+	switch (action.type) {
+		case MODUWARE_API_READY:
+			return {
+				...state,
+				apiReady: true
+			};
+		case UPDATE_PAGE:
+			return {
+				...state,
+				page: action.page
+			};
+		case LOAD_LANGUAGE_TRANSLATION:
+			return {
+				...state,
+				language: action.language
+			}
+		default:
+			return state;
+	}
 };
 
 export default app;

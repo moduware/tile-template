@@ -11,36 +11,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 import { LitElement, html, css } from 'lit-element';
 import { setPassiveTouchGestures } from '@polymer/polymer/lib/utils/settings.js';
 import { connect } from 'pwa-helpers/connect-mixin.js';
-import { installMediaQueryWatcher } from 'pwa-helpers/media-query.js';
-import { installOfflineWatcher } from 'pwa-helpers/network.js';
-import { installRouter } from 'pwa-helpers/router.js';
-import { updateMetadata } from 'pwa-helpers/metadata.js';
-
-// This element is connected to the Redux store.
 import { store } from '../store.js';
-
-// These are the actions needed by this element.
-import {
-	navigate,
-	headerBackButtonClicked
-} from '../actions/app.js';
-
-// These are the elements needed by this element.
+import { navigate, headerBackButtonClicked, initializeModuwareApiAsync, loadLanguageTranslation } from '../actions/app.js';
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-scroll-effects/effects/waterfall.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import './icons.js';
-
 import 'webview-tile-header/webview-tile-header'
+import { registerTranslateConfig, use, translate, get } from "@appnest/lit-translate";
+import * as translation from '../translations/language.js';
 
 class MyApp extends connect(store)(LitElement) {
+
 	static get properties() {
 		return {
 			appTitle: { type: String },
 			_page: { type: String },
-			_drawerOpened: { type: Boolean },
-			_offline: { type: Boolean }
+			_language: { type: String },
 		};
 	}
 
@@ -195,7 +183,7 @@ class MyApp extends connect(store)(LitElement) {
       <!-- Webview Header -->
       <moduware-header	
         @back-button-click="${() => store.dispatch(headerBackButtonClicked())}"
-				title="Tile Template">
+				title="${translate('header.title')}">
 			</moduware-header>
       <!-- Main content -->
       <main role="main" class="main-content">
@@ -214,29 +202,35 @@ class MyApp extends connect(store)(LitElement) {
 		setPassiveTouchGestures(true);
 	}
 
-	firstUpdated() {
-		store.dispatch(navigate("/home-page")); // navigate can take /view1 or view2 or /view3
-		//installMediaQueryWatcher(`(min-width: 460px)`, () => store.dispatch(updateDrawerState(false)));
-		if (Moduware) {
-			console.log('Moduware', Moduware);
-		}
+	// Load the initial language and mark that the strings has been loaded.
+	async connectedCallback() {
+
+		/** this is to register the language translation loader from lit-translate */
+		registerTranslateConfig({
+			loader: (lang) => Promise.resolve(translation[lang])
+		});
+
+		super.connectedCallback();
 	}
 
-	updated(changedProps) {
-		if (changedProps.has('_page')) {
-			const pageTitle = this.appTitle + ' - ' + this._page;
-			updateMetadata({
-				title: pageTitle,
-				description: pageTitle
-				// This object also takes an image property, that points to an img src.
-			});
+	firstUpdated() {
+		store.dispatch(loadLanguageTranslation());
+		store.dispatch(navigate("/home-page"));
+		store.dispatch(initializeModuwareApiAsync());
+	}
+
+	updated(changedProperties) {
+		if (changedProperties.has('_page')) {
+		}
+
+		if (changedProperties.has('_language')) {
+			use(this._language);
 		}
 	}
 
 	stateChanged(state) {
 		this._page = state.app.page;
-		this._offline = state.app.offline;
-		this._drawerOpened = state.app.drawerOpened;
+		this._language = state.app.language;
 	}
 }
 

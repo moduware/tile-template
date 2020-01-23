@@ -16,12 +16,15 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 import { SharedStyles } from './shared-styles.js';
 import app from '../reducers/app.js';
 import './icons.js';
+import { registerTranslateConfig, use, translate, get } from "@appnest/lit-translate";
+import * as translation from '../translations/language.js';
 
 class HomePage extends connect(store)(PageViewElement) {
 
 	static get properties() {
 		return {
-			_page: { type: String }
+			_page: { type: String },
+			_language: { type: String }
 		};
 	}
 
@@ -36,18 +39,33 @@ class HomePage extends connect(store)(PageViewElement) {
 		];
 	}
 
+	updated(changedProperties) {
+		if (changedProperties.has('_language')) {
+			use(this._language);
+		}
+	}
+
+	async connectedCallback() {
+		registerTranslateConfig({
+			loader: (lang) => Promise.resolve(translation[lang])
+		});
+
+		super.connectedCallback();
+	}
+
 	render() {
 		return html`
       <section>
-				<h2>Home</h2>
-				<button @click="${() => store.dispatch(navigate('/page-one'))}">page-one</button>
-				<button @click="${() => store.dispatch(navigate('/page-two'))}">page-two</button>
+				<h2>${get('home-page.title')}</h2>
+				<button @click="${() => store.dispatch(navigate('/page-one'))}">${get('page-one.title')}</button>
+				<button @click="${() => store.dispatch(navigate('/page-two'))}">${translate('page-two.title')}</button>
       </section>
     `;
 	}
 
 	stateChanged(state) {
 		this._page = state.app.page;
+		this._language = state.app.language;
 	}
 
 }
