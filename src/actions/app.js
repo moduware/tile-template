@@ -32,6 +32,10 @@ export const moduwareApiReady = () => async dispatch => {
 	dispatch({ type: MODUWARE_API_READY });
 	dispatch(loadLanguageTranslation());
 
+	Moduware.API.addEventListener('HardwareBackButtonPressed', () => {
+		dispatch(hardwareBackButtonPressed());
+	});
+
 	// Moduware.v1.Bluetooth.addEventListener('ConnectionLost', () => {
 	// 	dispatch(connectionLost());
 	// });
@@ -77,16 +81,13 @@ const updatePage = (page) => {
 	};
 };
 
-export const headerBackButtonClicked = () => (dispatch, getState) => {
-	console.log('Webview header back button clicked!');
-	if (Moduware) {
-		if (getState().app.page === 'page-one' || getState().app.page === 'page-two' || getState().app.page === 'error-page') {
-			dispatch(navigate('/home-page'))
-		} else {
-			Moduware.API.Exit();
-		}
-	}
+export const headerBackButtonClicked = () => (dispatch) => {
+	if (typeof Moduware !== 'undefined') Moduware.API.Exit();
 };
+
+export const hardwareBackButtonPressed = () => (dispatch) => {
+	if (typeof Moduware !== 'undefined') Moduware.API.Exit();
+}
 
 /**
  * function that gets the platform/OS of the device using userAgent
