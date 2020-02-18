@@ -12,12 +12,14 @@ import {
 	UPDATE_PAGE,
 	MODUWARE_API_READY,
 	LOAD_LANGUAGE_TRANSLATION,
+	GET_PLATFORM,
 } from '../actions/app.js';
 
 const INITIAL_STATE = {
 	page: '',
 	apiReady: false,
-	language: 'en'
+	language: 'en',
+	platform: '',
 };
 
 const app = (state = INITIAL_STATE, action) => {
@@ -36,6 +38,11 @@ const app = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				language: action.language
+			}
+		case GET_PLATFORM:
+			return {
+				...state,
+				platform: action.platform
 			}
 		default:
 			return state;

@@ -12,7 +12,13 @@ import { LitElement, html, css } from 'lit-element';
 import { setPassiveTouchGestures } from '@polymer/polymer/lib/utils/settings.js';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 import { store } from '../store.js';
-import { navigate, headerBackButtonClicked, initializeModuwareApiAsync, loadLanguageTranslation } from '../actions/app.js';
+import { 
+  navigate, 
+  headerBackButtonClicked, 
+  initializeModuwareApiAsync, 
+  loadLanguageTranslation,
+  getPlatform
+} from '../actions/app.js';
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-scroll-effects/effects/waterfall.js';
@@ -28,7 +34,11 @@ class MyApp extends connect(store)(LitElement) {
 		return {
 			appTitle: { type: String },
 			_page: { type: String },
-			_language: { type: String },
+      _language: { type: String },
+      platform: {
+        type: String,
+        reflect: true
+      },
 		};
 	}
 
@@ -216,7 +226,8 @@ class MyApp extends connect(store)(LitElement) {
 	firstUpdated() {
 		store.dispatch(loadLanguageTranslation());
 		store.dispatch(navigate("/home-page"));
-		store.dispatch(initializeModuwareApiAsync());
+    store.dispatch(initializeModuwareApiAsync());
+    store.dispatch(getPlatform());
 	}
 
 	updated(changedProperties) {
@@ -225,12 +236,15 @@ class MyApp extends connect(store)(LitElement) {
 
 		if (changedProperties.has('_language')) {
 			use(this._language);
-		}
+    }
+    
+    console.log('platform is:', this.platform);
 	}
 
 	stateChanged(state) {
 		this._page = state.app.page;
 		this._language = state.app.language;
+		this.platform = state.app.platform;
 	}
 }
 

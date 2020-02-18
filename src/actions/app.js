@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 export const UPDATE_PAGE = 'UPDATE_PAGE';
 export const MODUWARE_API_READY = 'MODUWARE_API_READY';
 export const LOAD_LANGUAGE_TRANSLATION = 'LOAD_LANGUAGE_TRANSLATION';
+export const GET_PLATFORM = 'GET_PLATFORM';
 
 // This is a fix to iOS not auto connecting and not finding any devices
 export const initializeModuwareApiAsync = () => async dispatch => {
@@ -42,7 +43,7 @@ export const navigate = (path) => (dispatch) => {
 };
 
 export const loadLanguageTranslation = () => async dispatch => {
-	language = Moduware.Arguments.language;
+	let language = Moduware.Arguments.language || 'en';
 	console.log(Moduware.Arguments);
 	dispatch({ type: LOAD_LANGUAGE_TRANSLATION, language });
 }
@@ -85,5 +86,28 @@ export const headerBackButtonClicked = () => (dispatch, getState) => {
 			Moduware.API.Exit();
 		}
 	}
+};
+
+/**
+ * function that gets the platform/OS of the device using userAgent
+ */
+export const getPlatform = () => (dispatch) => {
+	let userAgent = navigator.userAgent || navigator.vendor || window.opera;
+	let platform = 'unknown';
+
+	// Windows Phone must come first because its UA also contains "Android"
+	if (/windows phone/i.test(userAgent)) {
+		platform = 'windows-phone';
+	}
+
+	if (/android/i.test(userAgent)) {
+		platform = 'android';
+	}
+
+	// iOS detection from: http://stackoverflow.com/a/9039885/177710
+	if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+		platform = 'ios';
+	}
+	dispatch({ type: GET_PLATFORM, platform });
 };
 
