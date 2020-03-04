@@ -15,7 +15,7 @@ git clone --depth 1 https://github.com/moduware/tile-template.git temp && rm -rf
 To copy the tile template with webpack setup, you can clone the `webpack` branch from the pwa-starter-kit repo:
 
 ```bash
-git clone --depth 1 -b template-typescript --single-branch https://github.com/moduware/tile-template.git temp && rm -rf temp/.git && mv temp/* temp/.gitignore . && rm -rf temp
+git clone --depth 1 -b webpack --single-branch https://github.com/moduware/tile-template.git temp && rm -rf temp/.git && mv temp/* temp/.gitignore . && rm -rf temp
 ```
 
 To install all dependency run:
